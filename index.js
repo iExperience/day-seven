@@ -7,6 +7,29 @@ app.use(express.urlencoded({ extended: false }));
 
 var users = new Array();
 
+app.get("/api/users/:id", (req, res) => {
+    const userId = req.params.id;
+    // req.query.abc;
+
+    const numberUserId = parseInt(userId);
+    if(isNaN(numberUserId)) {
+        return res.status(400).json({message: "I am expecting an integer"});
+    }
+
+    if (!userId) {
+        return res.status(400).json({message: "Please pass in a userId"});
+    }
+
+    for (var k = 0; k < users.length; k++) {
+        const aUser = users[k];
+        if (aUser.id == userId) {
+            return res.status(200).json(aUser);
+        }
+    }
+
+    return res.status(404).json({message: "User not found"});
+});
+
 app.post("/api/users", (req, res) => {
     const user = req.body;
     const bodyFirstname = user.firstname;
