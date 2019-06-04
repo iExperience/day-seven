@@ -14,8 +14,37 @@ app.post("/api/users", (req, res) => {
     const bodyEmail = user.email;
     const bodyPassword = user.password;
 
+    var errors = [];
+    if (!bodyFirstname) {
+        errors.push({message: "Invalid firstname"});
+        // return res.status(400).json({message: "Invalid firstname"});
+    }
+
     if (!bodyEmail) {
-        return res.status(400).json({message: "Invalid request"});
+        errors.push({message: "Invalid firstname"});
+        // return res.status(400).json({message: "Invalid email"});
+    }
+
+    if (errors.length > 0) {
+        return res.status(400).json({errorMessages: errors});
+    }
+
+    // Functional for loop
+    // let foundUser = null;
+    // users.forEach((aUser) => {
+    //     if (aUser.email === bodyEmail) {
+    //         foundUser = aUser;
+    //     }
+    // });
+    // if (foundUser != null) {
+    //     return res.status(400).json({message: "User exists with that email"});
+    // }
+
+    for (var k = 0; k < users.length; k++) {
+        const aUser = users[k];
+        if (aUser.email === bodyEmail) {
+            return res.status(400).json({message: "User exists with that email"});
+        }
     }
 
     var newUser = {
