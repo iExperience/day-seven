@@ -1,5 +1,7 @@
 const express = require("express");
 
+const fs = require("fs");
+
 const app = express();
 
 // Playing around with importing...
@@ -16,6 +18,29 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 var users = new Array();
+
+app.post("/read/file", (req, res) => {
+    fs.readFile("./data/file.json", function(err, data) {
+        if (err) {
+            return res.status(500).json({message: "Unable to open the file"});
+        }
+
+        var jsonFromString = JSON.parse(data);
+
+        jsonFromString.users.push({id: 1});
+
+        fs.writeFile("./data/file.json", JSON.stringify(jsonFromString), function(err) {
+            if (err) {
+                return res.status(500).json({message: "Unable to write the file"});
+            }
+
+            return res.status(200).json(jsonFromString);
+        });
+
+        // Removed into the latest callback
+        // return res.status(200).json(jsonFromString);
+    });
+});
 
 app.get("/api/users/:id", (req, res) => {
     const userId = req.params.id;
